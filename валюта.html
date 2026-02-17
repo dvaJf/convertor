@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Конвертер валют с выбором даты</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <div class="header-top">
+        <button class="header-btn" id="themeToggle">Смена темы</button>
+    </div>
+
+    <div class="main-content">
+        <div class="date-row">
+            <div class="date-label">Выберите дату</div>
+            <input type="date" class="date-picker" id="selectedDate">
+        </div>
+
+        <div class="currency-section">
+            <div class="currency-card">
+                <div class="currency-label"><span></span><span id="fromResult">0</span></div>
+                <input type="number" class="currency-input" id="amountFrom" value="100" min="0" step="0.01">
+                <select class="currency-select" id="currencyFrom">
+                    <option value="USD" selected>USD - Доллар США</option>
+                    <option value="EUR">EUR - Евро</option>
+                    <option value="GBP">GBP - Фунт</option>
+                    <option value="RUB">RUB - Рубль</option>
+                </select>
+                <div class="quick-amounts">
+                    <span class="quick-amount" data-amount="10">10</span>
+                    <span class="quick-amount" data-amount="50">50</span>
+                    <span class="quick-amount" data-amount="100">100</span>
+                    <span class="quick-amount" data-amount="500">500</span>
+                    <span class="quick-amount" data-amount="1000">1000</span>
+                </div>
+            </div>
+
+            <button class="swap-button" id="swapCurrencies">⇄</button>
+
+            <div class="currency-card">
+                <div class="currency-label"><span></span><span id="toResult">0</span></div>
+                <input type="number" class="currency-input" id="amountTo" readonly>
+                <select class="currency-select" id="currencyTo">
+                    <option value="RUB" selected>RUB - Рубль</option>
+                    <option value="USD">USD - Доллар США</option>
+                    <option value="EUR">EUR - Евро</option>
+                    <option value="GBP">GBP - Фунт</option>
+                </select>
+            </div>
+        </div>
+        <div class="exchange-rate-info">
+
+            <div class="exchange-rate" id="exchangeRate">—</div>
+        </div>
+        <div class="toggle-buttons">
+            <button id="showTableBtn" class="toggle-btn active">Показать таблицу</button>
+            <button id="showChartBtn" class="toggle-btn">Показать график</button>
+        </div>
+
+        <div class="table-container" id="ratesTableContainer">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Валюта</th>
+                        <th>Курс к RUB</th>
+                        <th>Изменение</th>
+                        <th>Дата</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>USD</td><td id="tableUsdRate">—</td><td id="tableUsdRate_d" >—</td><td class="date-cell">—</td></tr>
+                    <tr><td>EUR</td><td id="tableEurRate">—</td><td id="tableEurRate_d" >—</td><td class="date-cell">—</td></tr>
+                    <tr><td>GBP</td><td id="tableGbpRate">—</td><td id="tableGbpRate_d" >—</td><td class="date-cell">—</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="chartContainer">
+            <div class="chart-controls">
+                <label for="chartCurrency">Валюта:</label>
+                <select id="chartCurrency" class="currency-select" style="width:140px;">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                </select>
+            </div>
+
+            <canvas id="chartCanvas" width="760" height="240"></canvas>
+        </div>
+        <button class="forecast-btn" id="forecastBtn">Спрогнозировать курс</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
