@@ -20,8 +20,10 @@ const ratesTableContainer = document.getElementById('ratesTableContainer');
 const chartContainer = document.getElementById('chartContainer');
 const chartCanvas = document.getElementById('chartCanvas');
 const chartCtx = chartCanvas.getContext('2d');
-const chartCurrencySelect = document.getElementById('chartCurrency');
-
+const chartCurrencySelect = document.getElementById('chartCurrency1');
+const chartCurrencySelect2 = document.getElementById('chartCurrency2');
+const days = document.getElementById('days');
+const prognoz = document.getElementById('forecastBtn');
 
 let exchangeRates = {};
 const today = new Date();
@@ -31,7 +33,7 @@ datePicker.value = formattedDate;
 
 async function loadRates(date){
     try{
-        res = await fetch(`http://localhost:8000/api/rates/?date=${date}`);// ВПИСАТЬ ХОСТ НОРМАЛЬНЫЙ 
+        res = await fetch(`http://localhost:8000//api/rates/?date=${date}`);// ВПИСАТЬ ХОСТ НОРМАЛЬНЫЙ 
         data = await res.json();
         exchangeRates = {};
         for(key in data){
@@ -82,9 +84,9 @@ function updateTable(){
     tableUsdRate.textContent = exchangeRates['USD'].toFixed(2);
     tableEurRate.textContent = exchangeRates['EUR'].toFixed(2);
     tableGbpRate.textContent = exchangeRates['GBP'].toFixed(2);
-    tableUsdRate_d.textContent = exchangeRates['USD_D'].toFixed(4);
-    tableEurRate_d.textContent = exchangeRates['EUR_D'].toFixed(4);
-    tableGbpRate_d.textContent = exchangeRates['GBP_D'].toFixed(4);
+    tableUsdRate_d.textContent = exchangeRates['USD_D'] > 0 ? "+"+exchangeRates['USD_D'].toFixed(4) : exchangeRates['USD_D'].toFixed(4);
+    tableEurRate_d.textContent = exchangeRates['EUR_D'] > 0 ? "+"+exchangeRates['EUR_D'].toFixed(4) : exchangeRates['EUR_D'].toFixed(4);
+    tableGbpRate_d.textContent = exchangeRates['GBP_D'] > 0 ? "+"+exchangeRates['GBP_D'].toFixed(4) : exchangeRates['GBP_D'].toFixed(4);
     tableUsdRate_d.className = (exchangeRates['USD_D'] > 0 ? 'positive' : 'negative');
     tableEurRate_d.className =  (exchangeRates['EUR_D'] > 0 ? 'positive' : 'negative');
     tableGbpRate_d.className =  (exchangeRates['GBP_D'] > 0 ? 'positive' : 'negative');
@@ -132,20 +134,21 @@ function findRateInResponse(dataObj, currencyCode){
     return null;
 }
 
-async function fetchSeriesFromApi(currencyCode, endDateIso){
+async function fetchSeriesFromApi(targetCurrency, baseCurrency, endDateIso, n){
     const labels = [];
     const values = [];
+
     const end = new Date(endDateIso);
     const dates = [];
-    for(let i = 13; i >= 0; i--){
+
+    for(let i = n; i >= 0; i--){
         const d = new Date(end);
         d.setDate(end.getDate() - i);
-        const d1 = d.toISOString().slice(0,10);
-        dates.push(d1);
+        dates.push(d.toISOString().slice(0,10));
     }
 
     const fetches = dates.map(date =>
-        fetch(`http://localhost:8000/api/rates/?date=${date}`) // ВПИСАТЬ ХОСТ НОРМАЛЬНЫЙ 
+        fetch(`http://localhost:8000/api/rates/?date=${date}`)
             .then(res => res.ok ? res.json() : null)
             .catch(()=>null)
     );
@@ -153,13 +156,34 @@ async function fetchSeriesFromApi(currencyCode, endDateIso){
     const responses = await Promise.all(fetches);
 
     for(let i=0;i<dates.length;i++){
-        const d1 = dates[i];
         const data = responses[i];
-        const rate = findRateInResponse(data, currencyCode);
 
-        const d = new Date(d1);
+        if(!data){
+            values.push(null);
+            labels.push('');
+            continue;
+        }
+
+        const targetRate = findRateInResponse(data, targetCurrency);
+        const baseRate = findRateInResponse(data, baseCurrency);
+
+        let rate;
+
+        if(baseCurrency === targetCurrency){
+            rate = 1; 
+        } else if(baseCurrency === 'RUB'){
+            rate = targetRate; 
+        } else if(targetCurrency === 'RUB'){
+            rate = 1 / baseRate; 
+        } else {
+            rate = targetRate / baseRate;
+        }
+
+
+        const d = new Date(dates[i]);
         const dd = String(d.getDate()).padStart(2,'0');
         const mm = String(d.getMonth()+1).padStart(2,'0');
+
         labels.push(`${dd}.${mm}`);
         values.push(rate);
     }
@@ -169,18 +193,13 @@ async function fetchSeriesFromApi(currencyCode, endDateIso){
 
 
 function drawLineChartWithLabels(values, labels){
-
-    const DPR = window.devicePixelRatio;
-    const cssW = chartCanvas.clientWidth;
-    const cssH = chartCanvas.clientHeight;
-    chartCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
-
-    chartCtx.fillStyle = '#f5f5f5';
-    chartCtx.fillRect(0, 0, cssW, cssH);
+    const isDark = document.body.classList.contains('dark-theme');
+    chartCtx.fillStyle = isDark ? '#363636' : '#f5f5f5';
+    chartCtx.fillRect(0, 0, 760, 240);
 
     const padding = 40;
-    const w = cssW - padding*2;
-    const h = cssH - padding*2;
+    const w = 760 - padding*2;
+    const h = 240 - padding*2;
 
     const maxV = Math.max(...values);
     const minV = Math.min(...values);
@@ -205,25 +224,45 @@ function drawLineChartWithLabels(values, labels){
     }
     chartCtx.stroke();
 
-    chartCtx.fillStyle = '#333';
+    chartCtx.fillStyle = isDark ? '#FFFF' :'#333';
     for(let i=0;i<n;i++){
         const v = values[i];
         const x = padding + (i/(n-1))*w;
         
         const y = padding + h - ((v-minV)/range)*h;
-        chartCtx.fillText(labels[i] || '', x, padding+h+16);
-        chartCtx.fillText(v.toFixed(2), x, y-8);
+        chartCtx.fillText(labels[i], x, padding+h+16);
+        chartCtx.fillText(v.toFixed(2), x, y-10);
     }
 }
 
 
 async function updateChart(){
-    const cur = chartCurrencySelect.value;
+    const target = chartCurrencySelect.value;  
+    const base = chartCurrencySelect2.value;
     const end = datePicker.value;
-    const { labels, values } = await fetchSeriesFromApi(cur, end);
+    const n = days.value;
+    if(n>20){
+        alert("Введено слишком большое количество дней")
+        days.value=20
+        n=20
+    }
+
+    const { labels, values } = await fetchSeriesFromApi(target, base, end, n);
     drawLineChartWithLabels(values, labels);
 }
 
+function randd(input) {
+    if((input % 2) === 0){
+        alert("курс долара будет расти");
+    } else{
+        alert("курс долара будет падать");
+    }
+    
+}
+
+prognoz.addEventListener('click', () => randd(2));
+
+chartCurrencySelect2.addEventListener('change', updateChart);
 chartCurrencySelect.addEventListener('change', updateChart);
 currencyFromSelect.addEventListener('change', convertCurrency);
 currencyToSelect.addEventListener('change', convertCurrency);
@@ -235,8 +274,17 @@ document.querySelectorAll('.quick-amount[data-amount]').forEach(btn=>{
         convertCurrency();
     });
 });
+days.addEventListener('input',()=>{
+    if(chartContainer.style.display !== 'none'){
+    updateChart();
+}});
 
 datePicker.addEventListener('change', ()=>{ loadRates(datePicker.value); });
-themeToggle.addEventListener('click', ()=>document.body.classList.toggle('dark-theme'));
+themeToggle.addEventListener('click', ()=>{
+    document.body.classList.toggle('dark-theme');
+    if(chartContainer.style.display !== 'none'){
+        updateChart();
+    }
+});
 showTable();
 loadRates(datePicker.value);

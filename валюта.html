@@ -13,7 +13,7 @@
     </div>
 
     <div class="main-content">
-        <div class="date-row">
+        <div class="date-row">  
             <div class="date-label">Выберите дату</div>
             <input type="date" class="date-picker" id="selectedDate">
         </div>
@@ -21,7 +21,7 @@
         <div class="currency-section">
             <div class="currency-card">
                 <div class="currency-label"><span></span><span id="fromResult">0</span></div>
-                <input type="number" class="currency-input" id="amountFrom" value="100" min="0" step="0.01">
+                <input  class="currency-input" id="amountFrom" value="100" min="0" step="0.01">
                 <select class="currency-select" id="currencyFrom">
                     <option value="USD" selected>USD - Доллар США</option>
                     <option value="EUR">EUR - Евро</option>
@@ -79,11 +79,21 @@
 
         <div id="chartContainer">
             <div class="chart-controls">
-                <label for="chartCurrency">Валюта:</label>
-                <select id="chartCurrency" class="currency-select" style="width:140px;">
+                <div>количество дней назад</div>
+                <input  class="currency-select1" id="days" value="14" max="30" min="0" step="1">
+                <label for="chartCurrency">Валюта 1:</label>
+                <select id="chartCurrency1" class="currency-select" style="width:140px;">
+                    <option value="USD" selected>USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="RUB" >RUB</option>
+                </select>
+                <label for="chartCurrency">Валюта 2:</label>
+                <select id="chartCurrency2" class="currency-select" style="width:140px;">
                     <option value="USD">USD</option>
                     <option value="EUR">EUR</option>
                     <option value="GBP">GBP</option>
+                    <option value="RUB" selected>RUB</option>
                 </select>
             </div>
 
@@ -93,6 +103,6 @@
     </div>
 </div>
 
-<script src="script.js"></script>
+<script  src="script.js"> </script>
 </body>
 </html>

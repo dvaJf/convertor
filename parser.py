@@ -12,7 +12,7 @@ conn = psycopg2.connect(
 )
 cursor = conn.cursor()
 
-for x in range(1,18): 
+for x in range(17,20): 
     for y in range(2,3):
         if x//10==0 and y//10==0:
             url = f'https://ru.myfin.by/currency/0{x}-0{y}-2026'

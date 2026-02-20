@@ -20,4 +20,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('rates.urls')),
+    path('api/', include('accounts.urls')),  # все API начинаются с /api/
 ]
