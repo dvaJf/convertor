@@ -1,2 +1,6 @@
 venv/
 лишнее/
+node_modules/
+package-lock.json
+.pytest_cache
+__pycache__

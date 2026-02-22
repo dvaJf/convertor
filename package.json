@@ -1,0 +1,27 @@
+{
+  "name": "currency-converter-tests",
+  "version": "1.0.0",
+  "description": "Тесты для конвертера валют",
+  "scripts": {
+    "test": "jest --forceExit",
+    "test:verbose": "jest --verbose",
+    "test:coverage": "jest --coverage"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/script.test.js"
+    ],
+    "collectCoverageFrom": [
+      "**/script.js"
+    ],
+    "verbose": true,
+    "roots": [
+      "<rootDir>",
+      "<rootDir>/currency_project/currency_project/static"
+    ]
+  }
+}

@@ -1,14 +1,106 @@
+"""
+Модели данных для хранения курсов валют
+
+Данный модуль содержит модель Rate для хранения информации о курсах
+иностранных валют к российскому рублю.
+
+Автор: [Автор проекта]
+Дата создания: [Дата]
+"""
+
 from django.db import models
 
+
 class Rate(models.Model):
-    currency = models.CharField(max_length=10)
-    today = models.DecimalField(max_digits=10, decimal_places=4)
-    tomorrow = models.DecimalField(max_digits=10, decimal_places=4, null=True)
-    delta = models.DecimalField(max_digits=10, decimal_places=4, null=True)
-    parsed_time = models.DateTimeField(auto_now_add=True)
+    """
+    Модель курса валюты.
+    
+    Хранит информацию о курсах иностранных валют (USD, EUR, GBP)
+    к российскому рублю на определённую дату.
+    
+    Поля:
+        currency (str): Код валюты (например, 'ДОЛЛАР', 'ЕВРО', 'ФУНТ').
+            Длина: до 3 символов (для русских названий может быть больше)
+        today (Decimal): Курс валюты на текущий день.
+            Максимальное значение: 10 знаков до запятой, 4 знака после
+        tomorrow (Decimal): Курс валюты на завтрашний день.
+            Максимальное значение: 10 знаков до запятой, 4 знака после
+        delta (Decimal): Изменение курса по сравнению с предыдущим днём.
+            Может быть положительным (рост) или отрицательным (падение).
+            Максимальное значение: 10 знаков до запятой, 4 знака после
+        parsed_time (DateTime): Дата и время парсинга/публикации курса.
+            Устанавливается автоматически при создании записи.
+    
+    Meta:
+        db_table: Имя таблицы в базе данных ('rates')
+    
+    Пример использования:
+        rate = Rate(
+            currency='ДОЛЛАР',
+            today=95.5000,
+            tomorrow=95.7500,
+            delta=0.2500,
+            parsed_time=datetime(2026, 1, 15)
+        )
+        rate.save()
+    
+    Примечание:
+        Курсы хранятся в российских рублях за 1 единицу иностранной валюты.
+    """
+    
+    # Код/название валюты
+    currency = models.CharField(
+        max_length=3,
+        verbose_name='Валюта',
+        help_text='Код или название валюты (например, ДОЛЛАР, ЕВРО, ФУНТ)'
+    )
+    
+    # Курс на текущий день
+    today = models.DecimalField(
+        max_digits=10, 
+        decimal_places=4,
+        verbose_name='Курс сегодня',
+        help_text='Курс валюты на текущий день в рублях'
+    )
+    
+    # Курс на завтрашний день
+    tomorrow = models.DecimalField(
+        max_digits=10, 
+        decimal_places=4,
+        verbose_name='Курс завтра',
+        help_text='Курс валюты на завтрашний день в рублях'
+    )
+    
+    # Изменение курса (дельта)
+    delta = models.DecimalField(
+        max_digits=10, 
+        decimal_places=4,
+        verbose_name='Изменение курса',
+        help_text='Изменение курса относительно предыдущего дня (может быть отрицательным)'
+    )
+    
+    # Дата и время парсинга курса
+    parsed_time = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата парсинга',
+        help_text='Дата и время сохранения курса в базу данных'
+    )
 
     class Meta:
+        """
+        Метаданные модели Rate.
+        
+        Определяет имя таблицы в базе данных.
+        """
         db_table = 'rates'
+        verbose_name = 'Курс валюты'
+        verbose_name_plural = 'Курсы валют'
 
     def __str__(self):
+        """
+        Строковое представление объекта Rate.
+        
+        Возвращает:
+            str: Код валюты (например, 'ДОЛЛАР').
+        """
         return self.currency
