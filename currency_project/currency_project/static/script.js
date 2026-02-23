@@ -88,6 +88,18 @@ const loginPassword = document.getElementById('loginPassword');
 /** @type {Object} Объект для хранения текущих курсов валют */
 let exchangeRates = {};
 
+/** @type {number} Курс шаурмы - всегда 250 рублей! */
+const SHAURMA_RATE = 250;
+const SHAURMA_DELTA = 0;
+
+/** @type {number} Курс кириешек - всегда 10 рублей! */
+const KIRIESHKI_RATE = 10;
+const KIRIESHKI_DELTA = 0;
+
+/** @type {number} Курс корма для марсика - всегда 10000 рублей! */
+const MARSIC_RATE = 10000;
+const MARSIC_DELTA = 0;
+
 // Инициализация даты (вчерашний день по умолчанию)
 const today = new Date();
 today.setDate(today.getDate() - 1);
@@ -131,6 +143,9 @@ async function loadRates(date) {
                 case 'ФУНТ':
                     exchangeRates['GBP'] = parseFloat(data[key]);
                     break;
+                case 'ШАУРМА':
+                    exchangeRates['SHAURMA'] = parseFloat(data[key]);
+                    break;
                 case 'ДОЛЛАР_DELTA':
                     exchangeRates['USD_D'] = parseFloat(data[key]);
                     break;
@@ -140,8 +155,23 @@ async function loadRates(date) {
                 case 'ФУНТ_DELTA':
                     exchangeRates['GBP_D'] = parseFloat(data[key]);
                     break;
+                case 'ШАУРМА_DELTA':
+                    exchangeRates['SHAURMA_D'] = parseFloat(data[key]);
+                    break;
             }
         }
+        
+        // Шаурма всегда стоит 250 рублей!
+        exchangeRates['SHAURMA'] = SHAURMA_RATE;
+        exchangeRates['SHAURMA_D'] = SHAURMA_DELTA;
+        
+        // Кириешки всегда стоят 10 рублей!
+        exchangeRates['KIRIESHKI'] = KIRIESHKI_RATE;
+        exchangeRates['KIRIESHKI_D'] = KIRIESHKI_DELTA;
+        
+        // Корм для марсика всегда стоит 10000 рублей!
+        exchangeRates['MARSIC'] = MARSIC_RATE;
+        exchangeRates['MARSIC_D'] = MARSIC_DELTA;
         
         // Обновление интерфейса
         convertCurrency();
@@ -322,6 +352,9 @@ CODE_TO_RUS = {
     USD: ['ДОЛЛАР'],
     EUR: ['ЕВРО'],
     GBP: ['ФУНТ'],
+    SHAURMA: ['ШАУРМА'],
+    KIRIESHKI: ['КИРИЕШКИ'],
+    MARSIC: ['МАРСИК'],
 };
 
 /**
@@ -390,13 +423,45 @@ async function fetchSeriesFromApi(targetCurrency, baseCurrency, endDateIso, n) {
         const data = responses[i];
 
         if (!data) {
+            // Для постоянных валют возвращаем курс даже если нет данных
+            if (targetCurrency === 'SHAURMA' && baseCurrency === 'RUB') {
+                const d = new Date(dates[i]);
+                const dd = String(d.getDate()).padStart(2, '0');
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                labels.push(`${dd}.${mm}`);
+                values.push(SHAURMA_RATE);
+                continue;
+            }
+            if (targetCurrency === 'KIRIESHKI' && baseCurrency === 'RUB') {
+                const d = new Date(dates[i]);
+                const dd = String(d.getDate()).padStart(2, '0');
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                labels.push(`${dd}.${mm}`);
+                values.push(KIRIESHKI_RATE);
+                continue;
+            }
+            if (targetCurrency === 'MARSIC' && baseCurrency === 'RUB') {
+                const d = new Date(dates[i]);
+                const dd = String(d.getDate()).padStart(2, '0');
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                labels.push(`${dd}.${mm}`);
+                values.push(MARSIC_RATE);
+                continue;
+            }
             values.push(null);
             labels.push('');
             continue;
         }
 
-        const targetRate = findRateInResponse(data, targetCurrency);
-        const baseRate = findRateInResponse(data, baseCurrency);
+        // Постоянные курсы для специальных валют
+        let targetRate = (targetCurrency === 'SHAURMA') ? SHAURMA_RATE : 
+                         (targetCurrency === 'KIRIESHKI') ? KIRIESHKI_RATE :
+                         (targetCurrency === 'MARSIC') ? MARSIC_RATE :
+                         findRateInResponse(data, targetCurrency);
+        let baseRate = (baseCurrency === 'SHAURMA') ? SHAURMA_RATE : 
+                       (baseCurrency === 'KIRIESHKI') ? KIRIESHKI_RATE :
+                       (baseCurrency === 'MARSIC') ? MARSIC_RATE :
+                       findRateInResponse(data, baseCurrency);
 
         let rate;
 

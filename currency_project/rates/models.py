@@ -50,9 +50,9 @@ class Rate(models.Model):
     
     # Код/название валюты
     currency = models.CharField(
-        max_length=3,
+        max_length=10,
         verbose_name='Валюта',
-        help_text='Код или название валюты (например, ДОЛЛАР, ЕВРО, ФУНТ)'
+        help_text='Код или название валюты (например, ДОЛЛАР, ЕВРО, ФУНТ, ШАУРМА)'
     )
     
     # Курс на текущий день

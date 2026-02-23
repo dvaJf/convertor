@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Конвертер валют с выбором даты</title>
 {% load static %}
-<link rel="stylesheet" href="{% static 'style.css' %}">
+<link rel="stylesheet" href="{% static 'style.css' %}?v=6">
 </head>
 <body>
 {% csrf_token %}
@@ -33,6 +33,9 @@
                     <option value="EUR">EUR - Евро</option>
                     <option value="GBP">GBP - Фунт</option>
                     <option value="RUB">RUB - Рубль</option>
+                    <option value="SHAURMA">SHAURMA - Шаурма</option>
+                    <option value="KIRIESHKI">KIRIESHKI - Пачка кириешек</option>
+                    <option value="MARSIC">MARSIC - Корм для марсика</option>
                 </select>
                 <div class="quick-amounts">
                     <span class="quick-amount" data-amount="10">10</span>
@@ -53,6 +56,9 @@
                     <option value="EUR">EUR - Евро</option>
                     <option value="GBP">GBP - Фунт</option>
                     <option value="RUB" selected>RUB - Рубль</option>
+                    <option value="SHAURMA">SHAURMA - Шаурма</option>
+                    <option value="KIRIESHKI">KIRIESHKI - Пачка кириешек</option>
+                    <option value="MARSIC">MARSIC - Корм для марсика</option>
                 </select>
             </div>
         </div>
@@ -79,6 +85,9 @@
                     <tr><td>USD</td><td id="tableUsdRate">—</td><td id="tableUsdRate_d" >—</td><td class="date-cell">—</td></tr>
                     <tr><td>EUR</td><td id="tableEurRate">—</td><td id="tableEurRate_d" >—</td><td class="date-cell">—</td></tr>
                     <tr><td>GBP</td><td id="tableGbpRate">—</td><td id="tableGbpRate_d" >—</td><td class="date-cell">—</td></tr>
+                    <tr><td>SHAURMA</td><td id="tableShaurmaRate">250.00</td><td id="tableShaurmaRate_d">0.00</td><td class="date-cell">всегда</td></tr>
+                    <tr><td>KIRIESHKI</td><td id="tableKirieshkiRate">10.00</td><td id="tableKirieshkiRate_d">0.00</td><td class="date-cell">всегда</td></tr>
+                    <tr><td>MARSIC</td><td id="tableMarsicRate">10000.00</td><td id="tableMarsicRate_d">0.00</td><td class="date-cell">всегда</td></tr>
                 </tbody>
             </table>
         </div>
@@ -92,7 +101,10 @@
                     <option value="USD" selected>USD</option>
                     <option value="EUR">EUR</option>
                     <option value="GBP">GBP</option>
-                    <option value="RUB" >RUB</option>
+                    <option value="RUB">RUB</option>
+                    <option value="SHAURMA">SHAURMA</option>
+                    <option value="KIRIESHKI">KIRIESHKI</option>
+                    <option value="MARSIC">MARSIC</option>
                 </select>
                 <label for="chartCurrency">Валюта 2:</label>
                 <select id="chartCurrency2" class="currency-select" style="width:140px;">
@@ -100,6 +112,9 @@
                     <option value="EUR">EUR</option>
                     <option value="GBP">GBP</option>
                     <option value="RUB" selected>RUB</option>
+                    <option value="SHAURMA">SHAURMA</option>
+                    <option value="KIRIESHKI">KIRIESHKI</option>
+                    <option value="MARSIC">MARSIC</option>
                 </select>
             </div>
 
@@ -170,6 +185,9 @@
                     <option value="EUR">EUR - Евро</option>
                     <option value="GBP">GBP - Фунт</option>
                     <option value="RUB">RUB - Рубль</option>
+                    <option value="SHAURMA">SHAURMA - Шаурма</option>
+                    <option value="KIRIESHKI">KIRIESHKI - Пачка кириешек</option>
+                    <option value="MARSIC">MARSIC - Корм для марсика</option>
                 </select>
             </div>
             <button type="submit" class="submit-btn">Сохранить</button>
@@ -178,7 +196,7 @@
     </div>
 </div>
 
-<script src="{% static 'script.js' %}?v=4"></script>
-<script src="{% static 'script.test.js' %}?v=4"></script>
+<script src="{% static 'script.js' %}?v=6"></script>
+<script src="{% static 'script.test.js' %}?v=6"></script>
 </body>
 </html>

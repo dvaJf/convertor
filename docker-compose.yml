@@ -28,6 +28,9 @@ services:
         condition: service_healthy
     environment:
       - DJANGO_SETTINGS_MODULE=currency_project.settings
+    volumes:
+      - ./:/app
+    command: python manage.py runserver 0.0.0.0:8000
 
 volumes:
   pgdata:
