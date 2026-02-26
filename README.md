@@ -174,7 +174,9 @@ valutarabochaa/
 
 # Сборка и запуск контейнеров
 docker-compose up -d --build
-
+# Миграции
+docker-compose exec web python manage.py makemigrations
+docker-compose exec web python manage.py migrate
 # Остановка
 docker-compose down
 ```
