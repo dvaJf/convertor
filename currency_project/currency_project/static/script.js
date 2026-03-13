@@ -302,7 +302,7 @@ async function updateChart() {
     const target = chartCurrencySelect.value;
     const base = chartCurrencySelect2.value;
     const end = datePicker.value;
-    let n = parseInt(days.value) || 7;
+    let n = parseInt(days.value) || 14;
 
     if (n > 20) {
         alert('Введено слишком большое количество дней');
@@ -315,15 +315,29 @@ async function updateChart() {
 }
 
 
-function randd(input) {
-    if ((input % 2) === 0) {
-        alert('курс долара будет расти');
-    } else {
-        alert('курс долара будет падать');
-    }
-}
+prognoz.addEventListener('click', async () => {
+    const target = document.getElementById('chartCurrency1').value;
+    const base = document.getElementById('chartCurrency2').value;
+    const end = datePicker.value;
+    let n = 30;
+    const { labels, values } = await fetchSeriesFromApi(target, base, end, n);
+    try {
+        prognoz.textContent = "Загрузка...";
+        const response = await fetch("https://7jwx96tr-8080.euw.devtunnels.ms/session", {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain"
+            },
+            body: `проанализуй курс валют и дай прогноз вот даты  ${labels} и курсы ${target} : ${values}`  
+        });
+        const resultText = await response.text(); 
+        alert(resultText);
 
-prognoz.addEventListener('click', () => randd(2));
+    } catch (error) {
+        console.error("Ошибка:", error);
+    }
+    prognoz.textContent = "Спрогнозировать курс";
+});
 
 
 chartCurrencySelect2.addEventListener('change', updateChart);
@@ -708,6 +722,7 @@ async function checkAuthStatus() {
         }
     }
 }
+
 
 checkAuthStatus();
 showTable();

@@ -18,10 +18,7 @@ from .models import CustomUser
 
 User = get_user_model()
 
-
-# ============================================================================
 # ТЕСТЫ МОДЕЛИ CustomUser
-# ============================================================================
 
 class CustomUserModelTest(TestCase):
     """
@@ -67,13 +64,11 @@ class CustomUserModelTest(TestCase):
         """
         Тест: Поле theme принимает допустимые значения.
         """
-        # Тест светлой темы
         user_light = User.objects.create_user(username='user3', password='pass123')
         user_light.theme = 'light'
         user_light.save()
         self.assertEqual(user_light.theme, 'light')
         
-        # Тест тёмной темы
         user_dark = User.objects.create_user(username='user4', password='pass123')
         user_dark.theme = 'dark'
         user_dark.save()
@@ -84,13 +79,9 @@ class CustomUserModelTest(TestCase):
         Тест: Обновление настроек пользователя.
         """
         user = User.objects.create_user(username='user5', password='pass123')
-        
-        # Обновление настроек
         user.default_currency = 'EUR'
         user.theme = 'dark'
         user.save()
-        
-        # Проверка обновления
         updated_user = User.objects.get(username='user5')
         self.assertEqual(updated_user.default_currency, 'EUR')
         self.assertEqual(updated_user.theme, 'dark')

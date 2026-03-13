@@ -29,23 +29,16 @@ class CustomUser(AbstractUser):
         blank=True, 
         null=True,
         unique=False, 
-        verbose_name='Email'
     )
     default_currency = models.CharField(
         max_length=3, 
         default='USD',
-        verbose_name='Валюта по умолчанию',
-        help_text='Трёхбуквенный код валюты (USD, EUR, GBP, RUB)'
     )
-    
-    # Тема оформления интерфейса
+
     theme = models.CharField(
         max_length=10, 
         default='light', 
         choices=[('light', 'Светлая'), ('dark', 'Темная')],
-        verbose_name='Тема оформления',
-        help_text='Предпочтительная тема интерфейса пользователя'
     )
 
-    # Список обязательных полей при создании суперпользователя
     REQUIRED_FIELDS = []

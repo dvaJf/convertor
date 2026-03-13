@@ -19,8 +19,8 @@ conn = psycopg2.connect(
 cursor = conn.cursor()
 
 
-for x in range(1, 32):
-    for y in range(1, 13):
+for x in range(10, 16):
+    for y in range(3, 4):
         if x // 10 == 0 and y // 10 == 0:
             url = f'https://ru.myfin.by/currency/0{x}-0{y}-2026'
         elif x // 10 == 0 and y // 10 != 0:

@@ -1,0 +1,35 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
+  application:
+    name: spring-ai-gigachat
+  profiles:
+    active: default
+  ai:
+    retry:
+      max-attempts: 3
+    gigachat:
+      auth:
+        bearer:
+          api-key: MDE5Yzc5ZTMtYTgxZi03ZmViLThkMzYtYTE4MTQzMDc2ZmFlOjcwMjk0OWNhLTQyNzUtNDhiYi05NjQ0LTg3MDM5YjljYjVjYw==
+        scope: GIGACHAT_API_PERS
+        unsafe-ssl: true
+      chat:
+        options:
+          model: GigaChat-2-MAX
+          http-headers:
+            x-client-id: ${spring.application.name}
+      embedding:
+        options:
+          model: Embeddings
+          dimensions: 1024
+
+logging:
+  level:
+    org.springframework.ai.chat.client.advisor: DEBUG
+    chat.giga.springai: DEBUG
+
+storage:
+  book: ./books

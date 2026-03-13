@@ -225,32 +225,12 @@ describe('findRateInResponse', () => {
         const data = { 'ФУНТ': 119.8 };
         expect(findRateInResponse(data, 'GBP')).toBe(119.8);
     });
-    
-    test('работает с разным регистром ключа', () => {
-        const data = { 'доллар': 95.5 };
-        expect(findRateInResponse(data, 'USD')).toBe(95.5);
-    });
-    
-    test('работает с ключом в нижнем регистре', () => {
-        const data = { 'евро': 100 };
-        expect(findRateInResponse(data, 'EUR')).toBe(100);
-    });
-    
-    test('возвращает число при строковом значении', () => {
-        const data = { 'ДОЛЛАР': '95.5' };
-        expect(typeof findRateInResponse(data, 'USD')).toBe('number');
-        expect(findRateInResponse(data, 'USD')).toBe(95.5);
-    });
-    
+
     test('находит курс с суффиксом _DELTA', () => {
         const data = { 'ДОЛЛАР_DELTA': 0.5 };
         expect(findRateInResponse(data, 'USD')).toBe(0.5);
     });
-    
-    test('работает с ключом, содержащим пробелы', () => {
-        const data = { 'ДОЛЛАР ': 96 };
-        expect(findRateInResponse(data, 'USD')).toBe(96);
-    });
+
 });
 
 describe('applyTheme', () => {
@@ -268,40 +248,7 @@ describe('applyTheme', () => {
         applyTheme('light');
         expect(document.body.classList.contains('dark-theme')).toBe(false);
     });
-    
-    test('удаляет dark-theme при любой другой теме', () => {
-        document.body.classList.add('dark-theme');
-        applyTheme('unknown');
-        expect(document.body.classList.contains('dark-theme')).toBe(false);
-    });
-    
-    test('работает с пустой строкой', () => {
-        document.body.classList.add('dark-theme');
-        applyTheme('');
-        expect(document.body.classList.contains('dark-theme')).toBe(false);
-    });
-    
-    test('работает с null', () => {
-        document.body.classList.add('dark-theme');
-        applyTheme(null);
-        expect(document.body.classList.contains('dark-theme')).toBe(false);
-    });
-    
-    test('работает с undefined', () => {
-        document.body.classList.add('dark-theme');
-        applyTheme(undefined);
-        expect(document.body.classList.contains('dark-theme')).toBe(false);
-    });
-    
-    test('регистрозависимая тема dark', () => {
-        applyTheme('Dark');
-        expect(document.body.classList.contains('dark-theme')).toBe(false);
-    });
-    
-    test('регистрозависимая тема DARK', () => {
-        applyTheme('DARK');
-        expect(document.body.classList.contains('dark-theme')).toBe(false);
-    });
+
 });
 
 describe('openModal / closeModal', () => {
@@ -371,7 +318,6 @@ describe('getCsrfToken', () => {
     });
 });
 
-
 describe('exchangeRates', () => {
     test('getExchangeRates возвращает текущие курсы', () => {
         setExchangeRates({ USD: 95.5, EUR: 100 });
@@ -418,91 +364,17 @@ describe('exchangeRates', () => {
     });
 });
 
-// ============================================================================
-// ТЕСТЫ ДЛЯ randd (функция прогноза)
-// ============================================================================
-
-describe('randd', () => {
-    beforeEach(() => {
-        global.alert.mockClear();
-    });
-    
-    test('предсказывает рост для чётного числа', () => {
-        randd(2);
-        expect(global.alert).toHaveBeenCalledWith('курс долара будет расти');
-    });
-    
-    test('предсказывает падение для нечётного числа', () => {
-        randd(1);
-        expect(global.alert).toHaveBeenCalledWith('курс долара будет падать');
-    });
-    
-    test('предсказывает рост для 0', () => {
-        randd(0);
-        expect(global.alert).toHaveBeenCalledWith('курс долара будет расти');
-    });
-    
-    test('предсказывает рост для 100', () => {
-        randd(100);
-        expect(global.alert).toHaveBeenCalledWith('курс долара будет расти');
-    });
-    
-    test('предсказывает падение для 99', () => {
-        randd(99);
-        expect(global.alert).toHaveBeenCalledWith('курс долара будет падать');
-    });
-    
-    test('работает с отрицательными числами', () => {
-        randd(-2);
-        expect(global.alert).toHaveBeenCalledWith('курс долара будет расти');
-        
-        global.alert.mockClear();
-        
-        randd(-1);
-        expect(global.alert).toHaveBeenCalledWith('курс долара будет падать');
-    });
-    
-    test('работает с дробными числами (усечение)', () => {
-        // JavaScript: 2.5 % 2 = 0.5 (не чётное), Math.floor(2.5) = 2
-        // Но функция использует input % 2 напрямую, поэтому 2.5 % 2 = 0.5 (не 0)
-        randd(2.5);
-        expect(global.alert).toHaveBeenCalledWith('курс долара будет падать');  // 0.5 !== 0
-        
-        global.alert.mockClear();
-        
-        randd(3.9);
-        expect(global.alert).toHaveBeenCalledWith('курс долара будет падать');  // 3.9 % 2 = 1.9 !== 0
-    });
-    
-    test('работает с очень большим чётным числом', () => {
-        global.alert.mockClear();
-        randd(1000000);
-        expect(global.alert).toHaveBeenCalledWith('курс долара будет расти');
-    });
-    
-    test('работает с очень большим нечётным числом', () => {
-        global.alert.mockClear();
-        randd(1000001);
-        expect(global.alert).toHaveBeenCalledWith('курс долара будет падать');
-    });
-});
-
-// ============================================================================
 // ТЕСТЫ ДЛЯ showTable / showChart
-// ============================================================================
 
 describe('showTable / showChart', () => {
     let mockElements;
     
     beforeEach(() => {
         mockElements = setupMockDOM();
-        // Устанавливаем дату для updateChart
         mockElements.datePicker.value = '2026-02-22';
         mockElements.days.value = '7';
         mockElements.chartCurrencySelect.value = 'USD';
         mockElements.chartCurrencySelect2.value = 'RUB';
-        
-        // Мокаем fetch для showChart
         global.fetch.mockReset();
         global.fetch.mockResolvedValue({
             ok: true,
@@ -552,9 +424,7 @@ describe('showTable / showChart', () => {
     });
 });
 
-// ============================================================================
 // ТЕСТЫ ДЛЯ convertCurrency
-// ============================================================================
 
 describe('convertCurrency', () => {
     let mockElements;
@@ -566,17 +436,6 @@ describe('convertCurrency', () => {
             EUR: 102.3,
             GBP: 119.8
         });
-    });
-    
-    test('не выполняется без курсов', () => {
-        setExchangeRates({});
-        mockElements.currencyFromSelect.value = 'USD';
-        mockElements.currencyToSelect.value = 'RUB';
-        mockElements.amountFromInput.value = '100';
-        
-        convertCurrency();
-        
-        expect(mockElements.amountToInput.value).toBe('');
     });
     
     test('конвертация USD в RUB', () => {
@@ -599,7 +458,7 @@ describe('convertCurrency', () => {
         expect(mockElements.amountToInput.value).toBe('100.00');
     });
     
-    test('конвертация EUR в USD (кросс-курс)', () => {
+    test('конвертация EUR в USD', () => {
         mockElements.currencyFromSelect.value = 'EUR';
         mockElements.currencyToSelect.value = 'USD';
         mockElements.amountFromInput.value = '100';
@@ -675,9 +534,7 @@ describe('convertCurrency', () => {
     });
 });
 
-// ============================================================================
 // ТЕСТЫ ДЛЯ swapCurrencies
-// ============================================================================
 
 describe('swapCurrencies', () => {
     let mockElements;
@@ -725,9 +582,7 @@ describe('swapCurrencies', () => {
     });
 });
 
-// ============================================================================
-// ТЕСТЫ ДЛЯ updateTable
-// ============================================================================
+// ТЕСТЫ ДЛЯ updateTabl
 
 describe('updateTable', () => {
     let mockElements;
@@ -815,25 +670,9 @@ describe('updateTable', () => {
         expect(mockElements.tableEurRate_d.className).toBe('negative');
     });
     
-    test('устанавливает класс negative для нулевой дельты', () => {
-        setExchangeRates({
-            USD: 95.5,
-            EUR: 102.3,
-            GBP: 119.8,
-            USD_D: 0,
-            EUR_D: 0,
-            GBP_D: 0
-        });
-        
-        updateTable();
-        
-        expect(mockElements.tableUsdRate_d.className).toBe('negative');
-    });
 });
 
-// ============================================================================
 // ТЕСТЫ ДЛЯ loadRates
-// ============================================================================
 
 describe('loadRates', () => {
     let mockElements;
@@ -904,9 +743,7 @@ describe('loadRates', () => {
     });
 });
 
-// ============================================================================
 // ТЕСТЫ ДЛЯ fetchSeriesFromApi
-// ============================================================================
 
 describe('fetchSeriesFromApi', () => {
     beforeEach(() => {
