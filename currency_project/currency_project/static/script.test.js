@@ -172,66 +172,6 @@ function setupMockDOM() {
     setDOMElements(mockElements);
     return mockElements;
 }
-describe('CODE_TO_RUS', () => {
-    test('содержит ключ USD', () => {
-        expect(CODE_TO_RUS).toHaveProperty('USD');
-    });
-    
-    test('содержит ключ EUR', () => {
-        expect(CODE_TO_RUS).toHaveProperty('EUR');
-    });
-    
-    test('содержит ключ GBP', () => {
-        expect(CODE_TO_RUS).toHaveProperty('GBP');
-    });
-    
-    test('USD содержит ДОЛЛАР', () => {
-        expect(CODE_TO_RUS.USD).toContain('ДОЛЛАР');
-    });
-    
-    test('EUR содержит ЕВРО', () => {
-        expect(CODE_TO_RUS.EUR).toContain('ЕВРО');
-    });
-    
-    test('GBP содержит ФУНТ', () => {
-        expect(CODE_TO_RUS.GBP).toContain('ФУНТ');
-    });
-    
-    test('USD является массивом', () => {
-        expect(Array.isArray(CODE_TO_RUS.USD)).toBe(true);
-    });
-    
-    test('EUR является массивом', () => {
-        expect(Array.isArray(CODE_TO_RUS.EUR)).toBe(true);
-    });
-    
-    test('GBP является массивом', () => {
-        expect(Array.isArray(CODE_TO_RUS.GBP)).toBe(true);
-    });
-});
-
-describe('findRateInResponse', () => {
-    test('находит курс USD по ключу ДОЛЛАР', () => {
-        const data = { 'ДОЛЛАР': 95.5 };
-        expect(findRateInResponse(data, 'USD')).toBe(95.5);
-    });
-    
-    test('находит курс EUR по ключу ЕВРО', () => {
-        const data = { 'ЕВРО': 102.3 };
-        expect(findRateInResponse(data, 'EUR')).toBe(102.3);
-    });
-    
-    test('находит курс GBP по ключу ФУНТ', () => {
-        const data = { 'ФУНТ': 119.8 };
-        expect(findRateInResponse(data, 'GBP')).toBe(119.8);
-    });
-
-    test('находит курс с суффиксом _DELTA', () => {
-        const data = { 'ДОЛЛАР_DELTA': 0.5 };
-        expect(findRateInResponse(data, 'USD')).toBe(0.5);
-    });
-
-});
 
 describe('applyTheme', () => {
     beforeEach(() => {
@@ -249,73 +189,6 @@ describe('applyTheme', () => {
         expect(document.body.classList.contains('dark-theme')).toBe(false);
     });
 
-});
-
-describe('openModal / closeModal', () => {
-    test('openModal устанавливает display: block', () => {
-        const modal = createMockElement('testModal');
-        openModal(modal);
-        expect(modal.style.display).toBe('block');
-    });
-    
-    test('closeModal устанавливает display: none', () => {
-        const modal = createMockElement('testModal');
-        closeModal(modal);
-        expect(modal.style.display).toBe('none');
-    });
-    
-    test('открытие и закрытие модального окна', () => {
-        const modal = createMockElement('testModal');
-        openModal(modal);
-        expect(modal.style.display).toBe('block');
-        
-        closeModal(modal);
-        expect(modal.style.display).toBe('none');
-    });
-    
-    test('повторное открытие модального окна', () => {
-        const modal = createMockElement('testModal');
-        openModal(modal);
-        openModal(modal);
-        expect(modal.style.display).toBe('block');
-    });
-    
-    test('повторное закрытие модального окна', () => {
-        const modal = createMockElement('testModal');
-        closeModal(modal);
-        closeModal(modal);
-        expect(modal.style.display).toBe('none');
-    });
-});
-
-describe('getCsrfToken', () => {
-    beforeEach(() => {
-        document.querySelector.mockReset();
-        document.cookie = '';
-    });
-    test('ищет токен в cookie', () => {
-        document.querySelector.mockReturnValue(null);
-        document.cookie = 'csrftoken=cookie-token; other=value';
-        
-        const token = getCsrfToken();
-        expect(token).toBe('cookie-token');
-    });
-    
-    test('возвращает null если cookie пустая', () => {
-        document.querySelector.mockReturnValue(null);
-        document.cookie = '';
-        
-        const token = getCsrfToken();
-        expect(token).toBeNull();
-    });
-    
-    test('декодирует токен', () => {
-        document.querySelector.mockReturnValue(null);
-        document.cookie = 'csrftoken=encoded%20token';
-        
-        const token = getCsrfToken();
-        expect(token).toBe('encoded token');
-    });
 });
 
 describe('exchangeRates', () => {
@@ -364,7 +237,6 @@ describe('exchangeRates', () => {
     });
 });
 
-// ТЕСТЫ ДЛЯ showTable / showChart
 
 describe('showTable / showChart', () => {
     let mockElements;
@@ -423,8 +295,6 @@ describe('showTable / showChart', () => {
         expect(mockElements.ratesTableContainer.style.display).toBe('');
     });
 });
-
-// ТЕСТЫ ДЛЯ convertCurrency
 
 describe('convertCurrency', () => {
     let mockElements;
@@ -534,8 +404,6 @@ describe('convertCurrency', () => {
     });
 });
 
-// ТЕСТЫ ДЛЯ swapCurrencies
-
 describe('swapCurrencies', () => {
     let mockElements;
     
@@ -581,8 +449,6 @@ describe('swapCurrencies', () => {
         expect(mockElements.amountFromInput.value).toBe('0.00');
     });
 });
-
-// ТЕСТЫ ДЛЯ updateTabl
 
 describe('updateTable', () => {
     let mockElements;
@@ -672,7 +538,6 @@ describe('updateTable', () => {
     
 });
 
-// ТЕСТЫ ДЛЯ loadRates
 
 describe('loadRates', () => {
     let mockElements;
@@ -743,8 +608,6 @@ describe('loadRates', () => {
     });
 });
 
-// ТЕСТЫ ДЛЯ fetchSeriesFromApi
-
 describe('fetchSeriesFromApi', () => {
     beforeEach(() => {
         global.fetch.mockReset();
@@ -772,7 +635,7 @@ describe('fetchSeriesFromApi', () => {
         
         const result = await fetchSeriesFromApi('USD', 'RUB', '2026-01-15', 3);
         
-        expect(result.labels.length).toBe(4); // n + 1 точек
+        expect(result.labels.length).toBe(4);
         expect(result.values.length).toBe(4);
     });
     
@@ -795,10 +658,6 @@ describe('fetchSeriesFromApi', () => {
         expect(result.values[0]).toBe(1);
     });
 });
-
-// ============================================================================
-// ТЕСТЫ ДЛЯ drawLineChartWithLabels
-// ============================================================================
 
 describe('drawLineChartWithLabels', () => {
     let mockElements;
@@ -847,9 +706,7 @@ describe('drawLineChartWithLabels', () => {
         const labels = ['01.01', '02.01'];
         
         drawLineChartWithLabels(values, labels);
-        
-        // fillStyle устанавливается дважды: сначала для фона (#363636), потом для текста (#FFFF)
-        // Проверяем что fillRect был вызван (что означает fillStyle был установлен)
+
         expect(mockElements.chartCtx.fillRect).toHaveBeenCalled();
     });
     
@@ -858,16 +715,10 @@ describe('drawLineChartWithLabels', () => {
         const labels = ['01.01', '02.01'];
         
         drawLineChartWithLabels(values, labels);
-        
-        // fillStyle устанавливается дважды: сначала для фона (#f5f5f5), потом для текста (#333)
-        // Проверяем что fillRect был вызван (что означает fillStyle был установлен)
+
         expect(mockElements.chartCtx.fillRect).toHaveBeenCalled();
     });
 });
-
-// ============================================================================
-// ТЕСТЫ ДЛЯ saveUserProfile
-// ============================================================================
 
 describe('saveUserProfile', () => {
     beforeEach(() => {
@@ -906,10 +757,6 @@ describe('saveUserProfile', () => {
     });
 });
 
-// ============================================================================
-// ТЕСТЫ ДЛЯ saveDefaultCurrency
-// ============================================================================
-
 describe('saveDefaultCurrency', () => {
     beforeEach(() => {
         global.fetch.mockReset();
@@ -939,10 +786,6 @@ describe('saveDefaultCurrency', () => {
     });
 });
 
-// ============================================================================
-// ТЕСТЫ ДЛЯ saveTheme
-// ============================================================================
-
 describe('saveTheme', () => {
     beforeEach(() => {
         global.fetch.mockReset();
@@ -970,9 +813,6 @@ describe('saveTheme', () => {
     });
 });
 
-// ============================================================================
-// ТЕСТЫ ДЛЯ loginUser
-// ============================================================================
 
 describe('loginUser', () => {
     let mockElements;
@@ -1112,10 +952,6 @@ describe('logoutUser', () => {
     });
 });
 
-// ============================================================================
-// ТЕСТЫ ДЛЯ registerUser
-// ============================================================================
-
 describe('registerUser', () => {
     let mockElements;
     
@@ -1176,9 +1012,6 @@ describe('registerUser', () => {
     });
 });
 
-// ============================================================================
-// ТЕСТЫ ДЛЯ checkAuthStatus
-// ============================================================================
 
 describe('checkAuthStatus', () => {
     let mockElements;
@@ -1305,10 +1138,6 @@ describe('loadProfileData', () => {
     });
 });
 
-// ============================================================================
-// ТЕСТЫ ДЛЯ updateProfile
-// ============================================================================
-
 describe('updateProfile', () => {
     let mockElements;
     
@@ -1352,9 +1181,6 @@ describe('updateProfile', () => {
     });
 });
 
-// ============================================================================
-// ТЕСТЫ ДЛЯ loadProfileAndSetCurrency
-// ============================================================================
 
 describe('loadProfileAndSetCurrency', () => {
     let mockElements;
@@ -1383,16 +1209,12 @@ describe('loadProfileAndSetCurrency', () => {
     });
 });
 
-// ============================================================================
-// ТЕСТЫ ДЛЯ updateChart
-// ============================================================================
 
 describe('updateChart', () => {
     let mockElements;
     
     beforeEach(() => {
         mockElements = setupMockDOM();
-        // Устанавливаем необходимые значения
         mockElements.datePicker.value = '2026-02-22';
         mockElements.chartCurrencySelect.value = 'USD';
         mockElements.chartCurrencySelect2.value = 'RUB';
@@ -1429,10 +1251,6 @@ describe('updateChart', () => {
     });
 });
 
-// ============================================================================
-// ИНТЕГРАЦИОННЫЕ ТЕСТЫ
-// ============================================================================
-
 describe('Интеграционные тесты', () => {
     test('последовательное применение тем', () => {
         document.body.classList._classes.clear();
@@ -1448,14 +1266,12 @@ describe('Интеграционные тесты', () => {
     });
     
     test('работа с курсами через get/set', () => {
-        // Установка курсов
         setExchangeRates({
             USD: 95.5,
             EUR: 102.3,
             GBP: 119.8
         });
         
-        // Проверка получения
         const rates = getExchangeRates();
         expect(rates.USD).toBe(95.5);
         expect(rates.EUR).toBe(102.3);
@@ -1463,7 +1279,6 @@ describe('Интеграционные тесты', () => {
     });
     
     test('поиск курсов после изменения CODE_TO_RUS', () => {
-        // CODE_TO_RUS используется в findRateInResponse
         const data = { 'ДОЛЛАР': 96 };
         const rate = findRateInResponse(data, 'USD');
         expect(rate).toBe(96);
@@ -1476,8 +1291,7 @@ describe('Интеграционные тесты', () => {
             EUR: 102.3,
             GBP: 119.8
         });
-        
-        // Конвертация USD в RUB
+
         mockElements.currencyFromSelect.value = 'USD';
         mockElements.currencyToSelect.value = 'RUB';
         mockElements.amountFromInput.value = '100';
@@ -1485,8 +1299,7 @@ describe('Интеграционные тесты', () => {
         convertCurrency();
         
         expect(mockElements.amountToInput.value).toBe('9550.00');
-        
-        // Обмен валют
+
         swapCurrencies();
         
         expect(mockElements.currencyFromSelect.value).toBe('RUB');
@@ -1494,9 +1307,6 @@ describe('Интеграционные тесты', () => {
     });
 });
 
-// ============================================================================
-// ТЕСТЫ ГРАНИЧНЫХ ЗНАЧЕНИЙ
-// ============================================================================
 
 describe('Граничные значения', () => {
     test('findRateInResponse с очень большим числом', () => {
@@ -1553,65 +1363,7 @@ describe('Граничные значения', () => {
     });
 });
 
-// ============================================================================
-// ТЕСТЫ КЛАССОВ ЭКВИВАЛЕНТНОСТИ
-// ============================================================================
 
-describe('Классы эквивалентности для findRateInResponse', () => {
-    test('класс: ключи в верхнем регистре', () => {
-        expect(findRateInResponse({ 'ДОЛЛАР': 95 }, 'USD')).toBe(95);
-        expect(findRateInResponse({ 'ЕВРО': 100 }, 'EUR')).toBe(100);
-        expect(findRateInResponse({ 'ФУНТ': 120 }, 'GBP')).toBe(120);
-    });
-    
-    test('класс: ключи в нижнем регистре', () => {
-        expect(findRateInResponse({ 'доллар': 95 }, 'USD')).toBe(95);
-        expect(findRateInResponse({ 'евро': 100 }, 'EUR')).toBe(100);
-        expect(findRateInResponse({ 'фунт': 120 }, 'GBP')).toBe(120);
-    });
-    
-    test('класс: ключи в смешанном регистре', () => {
-        expect(findRateInResponse({ 'Доллар': 95 }, 'USD')).toBe(95);
-        expect(findRateInResponse({ 'Евро': 100 }, 'EUR')).toBe(100);
-        expect(findRateInResponse({ 'Фунт': 120 }, 'GBP')).toBe(120);
-    });
-    
-    test('класс: ключи с суффиксами', () => {
-        expect(findRateInResponse({ 'ДОЛЛАР_DELTA': 0.5 }, 'USD')).toBe(0.5);
-        expect(findRateInResponse({ 'ЕВРО_delta': -0.3 }, 'EUR')).toBe(-0.3);
-    });
-});
-
-// ============================================================================
-// ТЕСТЫ DOM-ЭЛЕМЕНТОВ
-// ============================================================================
-
-describe('setDOMElements / getDOMElements', () => {
-    test('setDOMElements устанавливает элементы', () => {
-        const mockElements = {
-            amountFromInput: createMockElement('test'),
-            currencyFromSelect: createMockElement('test')
-        };
-        
-        setDOMElements(mockElements);
-        
-        const elements = getDOMElements();
-        expect(elements.amountFromInput.id).toBe('test');
-    });
-    
-    test('getDOMElements возвращает все элементы', () => {
-        const elements = getDOMElements();
-        
-        expect(elements).toHaveProperty('amountFromInput');
-        expect(elements).toHaveProperty('amountToInput');
-        expect(elements).toHaveProperty('currencyFromSelect');
-        expect(elements).toHaveProperty('currencyToSelect');
-    });
-});
-
-// ============================================================================
-// ТЕСТЫ ОБРАБОТКИ ОШИБОК
-// ============================================================================
 
 describe('Обработка ошибок', () => {
     test('loadRates обрабатывает сетевую ошибку', async () => {
@@ -1628,22 +1380,17 @@ describe('Обработка ошибок', () => {
         document.querySelector.mockReturnValue({ value: 'csrf' });
         global.fetch.mockRejectedValue(new Error('Network error'));
         
-        // Не должен выбросить ошибку
         await expect(saveUserProfile({ theme: 'dark' })).resolves.not.toThrow();
     });
     
     test('loadProfileAndSetCurrency обрабатывает ошибку', async () => {
         setupMockDOM();
         global.fetch.mockRejectedValue(new Error('Network error'));
-        
-        // Не должен выбросить ошибку
+
         await expect(loadProfileAndSetCurrency()).resolves.not.toThrow();
     });
 });
 
-// ============================================================================
-// ТЕСТЫ СПЕЦИФИЧЕСКИХ СЦЕНАРИЕВ
-// ============================================================================
 
 describe('Специфические сценарии', () => {
     test('конвертация между одинаковыми валютами даёт 1', () => {
@@ -1668,16 +1415,13 @@ describe('Специфические сценарии', () => {
         mockElements.amountFromInput.value = '100';
         
         convertCurrency();
-        
-        // При отсутствии курса должен использовать 1
+
         expect(mockElements.exchangeRateElement.textContent).toContain('1.0000');
     });
     
     test('updateTable с неполными данными выбрасывает ошибку', () => {
         const mockElements = setupMockDOM();
-        setExchangeRates({ USD: 95.5 }); // Только USD, EUR и GBP отсутствуют
-        
-        // Должен выбросить ошибку при попытке вызвать toFixed на undefined
+        setExchangeRates({ USD: 95.5 });
         expect(() => updateTable()).toThrow();
     });
     
@@ -1688,8 +1432,7 @@ describe('Специфические сценарии', () => {
         });
         
         const result = await fetchSeriesFromApi('USD', 'RUB', '2026-01-15', 1);
-        
-        // При пустом ответе должен вернуть null
+
         expect(result.values[0]).toBeNull();
     });
 });

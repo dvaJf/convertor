@@ -52,7 +52,6 @@ const formattedDate = today.toISOString().slice(0, 10);
 datePicker.value = formattedDate;
 
 
-//Загружает курсы валют с сервера за указанную дату.
 async function loadRates(date) {
     try {
         const res = await fetch(`/api/rates/?date=${date}`);

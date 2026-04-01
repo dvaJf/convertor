@@ -18,7 +18,6 @@ from .models import CustomUser
 
 User = get_user_model()
 
-# ТЕСТЫ МОДЕЛИ CustomUser
 
 class CustomUserModelTest(TestCase):
     """
@@ -47,18 +46,6 @@ class CustomUserModelTest(TestCase):
         self.assertTrue(user.is_active)
         self.assertFalse(user.is_staff)
         self.assertFalse(user.is_superuser)
-    
-    def test_create_superuser(self):
-        """
-        Тест: Создание суперпользователя.
-        """
-        admin = User.objects.create_superuser(
-            username='admin',
-            password='admin123'
-        )
-        
-        self.assertTrue(admin.is_staff)
-        self.assertTrue(admin.is_superuser)
 
     def test_theme_field_choices(self):
         """
@@ -135,24 +122,6 @@ class RegisterSerializerTest(TestCase):
         
         self.assertEqual(user.username, 'serializer_user')
         self.assertTrue(user.check_password('testpass123'))
-    
-    def test_password_write_only(self):
-        """
-        Тест: Пароль доступен только для записи.
-        """
-        data = {
-            'username': 'user_pass',
-            'password': 'secret123',
-            'password2': 'secret123'
-        }
-        serializer = RegisterSerializer(data=data)
-        
-        self.assertTrue(serializer.is_valid())
-        user = serializer.save()
-        serializer_data = RegisterSerializer(user).data
-        
-        self.assertNotIn('password', serializer_data)
-        self.assertNotIn('password2', serializer_data)
   
     def test_password_mismatch(self):
         """

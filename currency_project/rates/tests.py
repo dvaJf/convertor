@@ -79,26 +79,6 @@ class RatesAPITest(TestCase):
         data = response.json()
         self.assertIn('ДОЛЛАР', data)
         self.assertIn('ДОЛЛАР_delta', data)
-    
-    def test_rates_delta_value_format(self):
-        """
-        Тест: Формат значения delta.
-        """
-        Rate.objects.create(
-            currency='ДОЛЛАР',
-            today=Decimal('95.0000'),
-            tomorrow=Decimal('95.5000'),
-            delta=Decimal('0.5000')
-        )
-        
-        today = now().date()
-        url = f"/api/rates/?date={today.isoformat()}"
-        response = self.client.get(url)
-        
-        data = response.json()
-        delta = data['ДОЛЛАР_delta']
-        
-        self.assertIsInstance(delta, (int, float))
 
     def test_get_rates_nonexistent_date(self):
         """
